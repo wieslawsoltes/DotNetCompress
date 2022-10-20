@@ -7,6 +7,8 @@
 [![Github All Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/latest/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 
+An .NET compression tool.
+
 # Usage
 
 ```
@@ -24,3 +26,7 @@ dotnetcompress /publish/files/path *.dll
 ```
 dotnetcompress /publish/files/path *.wasm
 ```
+
+## License
+
+DotNetCompress is licensed under the [MIT license](LICENSE.md).
