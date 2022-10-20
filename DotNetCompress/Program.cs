@@ -22,7 +22,7 @@ foreach (var file in files)
 foreach (var file in files)
 {
     var inPath = file;
-    var outPath = inPath + ".br";
+    var outPath = inPath + ".gz";
     Console.WriteLine($"Compressing: {outPath}");
     CompressGZip(inPath, outPath);
 }
