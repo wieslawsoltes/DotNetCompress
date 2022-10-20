@@ -122,7 +122,7 @@ static void Run(Settings settings)
             }
             else
             {
-                outputPath = Path.ChangeExtension(inputPath.FullName, "." + settings.Format.ToLower());
+                outputPath = inputPath.FullName + "." + settings.Format.ToLower();
                 if (settings.OutputDirectory is { } && !string.IsNullOrEmpty(settings.OutputDirectory.FullName))
                 {
                     outputPath = Path.Combine(settings.OutputDirectory.FullName, Path.GetFileName(outputPath));
