@@ -7,13 +7,24 @@
 [![Github All Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/latest/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 
-An .NET compression tool.
+An .NET compression tool. Supported file formats are Brotli and GZip.
 
 # Usage
+
+
+### Install
 
 ```
 dotnet tool install --global DotNetCompress --version 1.0.0-preview.4
 ```
+
+### Uninstall
+
+```
+dotnet tool uninstall -g DotNetCompress
+```
+
+### Command-line help
 
 ```
 DotNetCompress:           
@@ -35,14 +46,19 @@ Options:
   -?, -h, --help                                              Show help and usage information
 ```
 
-```
-dotnetcompress -d /publish/files/path -p *.dll --format br -l Optimal
-dotnetcompress -d /publish/files/path -p *.dll --format gz -l Optimal
-```
+### Brotli example
 
 ```
-dotnetcompress -d /publish/files/path -p *.wasm --format br -l Optimal
-dotnetcompress -d /publish/files/path -p *.wasm --format gz -l Optimal
+dotnetcompress -d /publish/files/path -p "*.dll" --format br -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format br -l Optimal
+```
+
+
+### GZip example
+
+```
+dotnetcompress -d /publish/files/path -p "*.dll" --format gz -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format gz -l Optimal
 ```
 
 ## License
