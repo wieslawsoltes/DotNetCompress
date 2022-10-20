@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System.Collections.Concurrent;
+using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -38,6 +39,11 @@ var optionLevel = new Option(new[] { "--level", "-l" }, "The compression level (
     Argument = new Argument<CompressionLevel>(getDefaultValue: () => CompressionLevel.SmallestSize)
 };
 
+var optionThreads = new Option(new[] { "--threads", "-t" }, "The number of parallel job threads")
+{
+    Argument = new Argument<int>(getDefaultValue: () => 1)
+};
+
 var rootCommand = new RootCommand
 {
     Description = "An .NET compression tool."
@@ -50,6 +56,7 @@ rootCommand.AddOption(optionOutputFiles);
 rootCommand.AddOption(optionPattern);
 rootCommand.AddOption(optionFormat);
 rootCommand.AddOption(optionLevel);
+rootCommand.AddOption(optionThreads);
 
 rootCommand.Handler = CommandHandler.Create(static (Settings settings) => Run(settings));
 
@@ -106,7 +113,8 @@ static void Run(Settings settings)
 
     var sw = Stopwatch.StartNew();
 
-    int processed = 0;
+    var threads = settings.Threads;
+    var jobs = new List<Job>();
 
     for (var i = 0; i < paths.Count; i++)
     {
@@ -129,14 +137,7 @@ static void Run(Settings settings)
                 }
             }
 
-            var currentDirectoryName = Path.GetDirectoryName(inputPath.FullName);
-            if (currentDirectoryName is { })
-            {
-                Directory.SetCurrentDirectory(currentDirectoryName);
-            }
-
-            Compress(inputPath.FullName, outputPath, settings.Format, settings.Level);
-            processed++;
+            jobs.Add(new Job(inputPath.FullName, outputPath, settings.Format, settings.Level));
         }
         catch (Exception ex)
         {
@@ -145,11 +146,17 @@ static void Run(Settings settings)
         }
     }
 
+    Parallel.For(0, jobs.Count, new ParallelOptions { MaxDegreeOfParallelism = threads }, i =>
+    {
+        var job = jobs[i];
+        Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel);
+    });
+
     sw.Stop();
 
     if (paths.Count > 0)
     {
-        Console.WriteLine($"Done: {sw.Elapsed} ({processed}/{paths.Count})");
+        Console.WriteLine($"Done: {sw.Elapsed})");
     }
 }
 
@@ -197,4 +204,8 @@ class Settings
     public string Pattern { get; set; } = "*.*";
     public string Format { get; set; } = "br";
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
+    public int Threads { get; set; } = 1;
 }
+
+
+record Job(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);
