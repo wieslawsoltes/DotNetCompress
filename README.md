@@ -12,7 +12,7 @@ An .NET compression tool.
 # Usage
 
 ```
-dotnet tool install --global DotNetCompress --version 1.0.0-preview.3
+dotnet tool install --global DotNetCompress --version 1.0.0-preview.4
 ```
 
 ```
