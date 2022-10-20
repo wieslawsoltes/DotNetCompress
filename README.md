@@ -12,19 +12,37 @@ An .NET compression tool.
 # Usage
 
 ```
-dotnet tool install --global DotNetCompress --version 1.0.0-preview.2
+dotnet tool install --global DotNetCompress --version 1.0.0-preview.3
 ```
 
 ```
-Usage: DotNetCompress <path> <pattern>
+DotNetCompress:
+  An .NET compression tool.
+
+Usage:
+  DotNetCompress [options]
+
+Options:
+  -f, --inputFiles <inputfiles>                               The relative or absolute path to the input files
+  -d, --inputDirectory <inputdirectory>                       The relative or absolute path to the input directory
+  -o, --outputDirectory <outputdirectory>                     The relative or absolute path to the output directory
+  --outputFiles <outputfiles>                                 The relative or absolute path to the output files
+  -p, --pattern <pattern>                                     The search string to match against the names of files in the input directory
+  --format <format>                                           The compression file format (br, gz)
+  -l, --level <Fastest|NoCompression|Optimal|SmallestSize>    The compression level (Optimal, Fastest, NoCompression, SmallestSize)
+  --version                                                   Show version information
+  -?, -h, --help                                              Show help and usage information
+
 ```
 
 ```
-dotnetcompress /publish/files/path *.dll
+dotnetcompress -d /publish/files/path -p *.dll --format br -l Optimal
+dotnetcompress -d /publish/files/path -p *.dll --format gz -l Optimal
 ```
 
 ```
-dotnetcompress /publish/files/path *.wasm
+dotnetcompress -d /publish/files/path -p *.wasm --format br -l Optimal
+dotnetcompress -d /publish/files/path -p *.wasm --format gz -l Optimal
 ```
 
 ## License
