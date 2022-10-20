@@ -16,7 +16,7 @@ dotnet tool install --global DotNetCompress --version 1.0.0-preview.4
 ```
 
 ```
-DotNetCompress:
+DotNetCompress:           
   An .NET compression tool.
 
 Usage:
@@ -30,9 +30,9 @@ Options:
   -p, --pattern <pattern>                                     The search string to match against the names of files in the input directory
   --format <format>                                           The compression file format (br, gz)
   -l, --level <Fastest|NoCompression|Optimal|SmallestSize>    The compression level (Optimal, Fastest, NoCompression, SmallestSize)
+  -t, --threads <threads>                                     The number of parallel job threads
   --version                                                   Show version information
   -?, -h, --help                                              Show help and usage information
-
 ```
 
 ```
