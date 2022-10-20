@@ -1,47 +1,47 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Binding;
+using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.IO.Compression;
 
-var optionInputFiles = new Option<FileInfo[]?>(
-    new[] {"--inputFiles", "-f"},
-    () => null,
-    "The relative or absolute path to the input files");
+var optionInputFiles = new Option(new[] { "--inputFiles", "-f" }, "The relative or absolute path to the input files")
+{
+    Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
+};
 
-var optionInputDirectory = new Option<DirectoryInfo?>(
-    new[] {"--inputDirectory", "-d"},
-    () => null,
-    "The relative or absolute path to the input directory");
+var optionInputDirectory = new Option(new[] { "--inputDirectory", "-d" }, "The relative or absolute path to the input directory")
+{
+    Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
+};
 
-var optionOutputDirectory = new Option<DirectoryInfo?>(
-    new[] {"--outputDirectory", "-o"},
-    () => null,
-    "The relative or absolute path to the output directory");
+var optionOutputDirectory = new Option(new[] { "--outputDirectory", "-o" }, "The relative or absolute path to the output directory")
+{
+    Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
+};
 
-var optionOutputFiles = new Option<FileInfo[]?>(
-    new[] {"--outputFiles"},
-    () => null,
-    "The relative or absolute path to the output files");
+var optionOutputFiles = new Option(new[] { "--outputFiles" }, "The relative or absolute path to the output files")
+{
+    Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
+};
 
-var optionPattern = new Option<string?>(
-    new[] {"--pattern", "-p"},
-    () => "*.*",
-    "The search string to match against the names of files in the input directory");
+var optionPattern = new Option(new[] { "--pattern", "-p" }, "The search string to match against the names of files in the input directory")
+{
+    Argument = new Argument<string?>(getDefaultValue: () => "*.*")
+};
 
-var optionFormat = new Option<string?>(
-    new[] {"--format"},
-    () => "br",
-    "The compression file format (br, gz)");
+var optionFormat = new Option(new[] { "--format" }, "The compression file format (br, gz)")
+{
+    Argument = new Argument<string>(getDefaultValue: () => "br")
+};
 
-var optionLevel = new Option<CompressionLevel>(
-    new[] {"--level", "-l"},
-    () => CompressionLevel.SmallestSize,
-    "The compression level (Optimal, Fastest, NoCompression, SmallestSize)");
+var optionLevel = new Option(new[] { "--level", "-l" }, "The compression level (Optimal, Fastest, NoCompression, SmallestSize)")
+{
+    Argument = new Argument<CompressionLevel>(getDefaultValue: () => CompressionLevel.SmallestSize)
+};
 
-var optionThreads = new Option<int>(
-    new[] {"--threads", "-t"},
-    () => 1,
-    "The number of parallel job threads");
+var optionThreads = new Option(new[] { "--threads", "-t" }, "The number of parallel job threads")
+{
+    Argument = new Argument<int>(getDefaultValue: () => 1)
+};
 
 var rootCommand = new RootCommand
 {
@@ -57,17 +57,7 @@ rootCommand.AddOption(optionFormat);
 rootCommand.AddOption(optionLevel);
 rootCommand.AddOption(optionThreads);
 
-rootCommand.SetHandler(
-    Run, 
-    new SettingsBinder(
-        optionInputFiles, 
-        optionInputDirectory,
-        optionOutputDirectory,
-        optionOutputFiles,
-        optionPattern,
-        optionFormat,
-        optionLevel,
-        optionThreads));
+rootCommand.Handler = CommandHandler.Create(static (Settings settings) => Run(settings));
 
 return await rootCommand.InvokeAsync(args);
 
@@ -120,12 +110,6 @@ static void Run(Settings settings)
         }
     }
 
-    if (settings.Format is null)
-    {
-        Console.WriteLine("Error: The format can not be null or empty.");
-        return;
-    }
-    
     var sw = Stopwatch.StartNew();
 
     var threads = settings.Threads;
@@ -212,59 +196,14 @@ static void CompressGZip(string inPath, string outPath, CompressionLevel compres
 
 class Settings
 {
-    public FileInfo[]? InputFiles { get; set; }
-    public DirectoryInfo? InputDirectory { get; set; }
-    public FileInfo[]? OutputFiles { get; set; }
-    public DirectoryInfo? OutputDirectory { get; set; }
-    public string? Pattern { get; set; } = "*.*";
-    public string? Format { get; set; } = "br";
+    public FileInfo[]? InputFiles { get; set; } = null;
+    public DirectoryInfo? InputDirectory { get; set; } = null;
+    public FileInfo[]? OutputFiles { get; set; } = null;
+    public DirectoryInfo? OutputDirectory { get; set; } = null;
+    public string Pattern { get; set; } = "*.*";
+    public string Format { get; set; } = "br";
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
     public int Threads { get; set; } = 1;
-}
-
-class SettingsBinder : BinderBase<Settings>
-{
-    private readonly Option<FileInfo[]?> _inputFiles;
-    private readonly Option<DirectoryInfo?> _inputDirectory;
-    private readonly Option<FileInfo[]?> _outputFiles;
-    private readonly Option<DirectoryInfo?> _outputDirectory;
-    private readonly Option<string?> _pattern;
-    private readonly Option<string?> _format;
-    private readonly Option<CompressionLevel> _level;
-    private readonly Option<int> _threads;
-
-    public SettingsBinder(
-        Option<FileInfo[]?> inputFiles,
-        Option<DirectoryInfo?> inputDirectory,
-        Option<DirectoryInfo?> outputDirectory,
-        Option<FileInfo[]?> outputFiles,
-        Option<string?> pattern,
-        Option<string?> format,
-        Option<CompressionLevel> level,
-        Option<int> threads)
-    {
-        _inputFiles = inputFiles;
-        _inputDirectory = inputDirectory;
-        _outputDirectory = outputDirectory;
-        _outputFiles = outputFiles;
-        _pattern = pattern;
-        _format = format;
-        _level = level;
-        _threads = threads;
-    }
-
-    protected override Settings GetBoundValue(BindingContext bindingContext) =>
-        new Settings
-        {
-            InputFiles = bindingContext.ParseResult.GetValueForOption(_inputFiles),
-            InputDirectory = bindingContext.ParseResult.GetValueForOption(_inputDirectory),
-            OutputDirectory = bindingContext.ParseResult.GetValueForOption(_outputDirectory),
-            OutputFiles = bindingContext.ParseResult.GetValueForOption(_outputFiles),
-            Pattern = bindingContext.ParseResult.GetValueForOption(_pattern),
-            Format = bindingContext.ParseResult.GetValueForOption(_format),
-            Level = bindingContext.ParseResult.GetValueForOption(_level),
-            Threads = bindingContext.ParseResult.GetValueForOption(_threads),
-        };
 }
 
 record Job(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);
