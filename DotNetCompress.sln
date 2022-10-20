@@ -2,6 +2,23 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCompress", "DotNetCompress\DotNetCompress.csproj", "{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{388C0B48-D2DB-4669-9C67-413FBC5EC750}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		global.json = global.json
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{F663AB78-E7AB-4939-A47D-10F9BB0DC958}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4830A2ED-9736-420A-80F4-36449EBA1475}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +29,8 @@ Global
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6} = {4830A2ED-9736-420A-80F4-36449EBA1475}
 	EndGlobalSection
 EndGlobal
