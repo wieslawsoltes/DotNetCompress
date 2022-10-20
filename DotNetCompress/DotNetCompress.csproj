@@ -5,10 +5,12 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <IsPackable>False</IsPackable>
+    <IsPackable>True</IsPackable>
     <IsTool>True</IsTool>
     <PackAsTool>True</PackAsTool>
     <ToolCommandName>DotNetCompress</ToolCommandName>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>preview.1</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup>
