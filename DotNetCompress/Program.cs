@@ -25,7 +25,7 @@ var optionOutputFiles = new Option(new[] { "--outputFiles" }, "The relative or a
 
 var optionPattern = new Option(new[] { "--pattern", "-p" }, "The search string to match against the names of files in the input directory")
 {
-    Argument = new Argument<string?>(getDefaultValue: () => null)
+    Argument = new Argument<string?>(getDefaultValue: () => "*.*")
 };
 
 var optionFormat = new Option(new[] { "--format" }, "The compression file format (br, gz)")
