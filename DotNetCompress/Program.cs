@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -206,6 +205,5 @@ class Settings
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
     public int Threads { get; set; } = 1;
 }
-
 
 record Job(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);
