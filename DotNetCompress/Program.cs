@@ -25,7 +25,7 @@ var optionOutputFiles = new Option(new[] { "--outputFiles" }, "The relative or a
 
 var optionPattern = new Option(new[] { "--pattern", "-p" }, "The search string to match against the names of files in the input directory")
 {
-    Argument = new Argument<string?>(getDefaultValue: () => "*.*")
+    Argument = new Argument<string[]?>(getDefaultValue: () => new []{ "*.*" })
 };
 
 var optionFormat = new Option(new[] { "--format" }, "The compression file format (br, gz)")
@@ -97,14 +97,17 @@ static void Run(Settings settings)
     if (settings.InputDirectory is { })
     {
         var directory = settings.InputDirectory;
-        var pattern = settings.Pattern;
-        if (string.IsNullOrEmpty(pattern))
+        var patterns = settings.Pattern;
+        if (patterns.Length == 0)
         {
-            Console.WriteLine("Error: The pattern can not be null or empty.");
+            Console.WriteLine("Error: The pattern can not be empty.");
             return;
         }
 
-        GetFiles(directory, pattern, paths, settings.Recursive);
+        foreach (var pattern in patterns)
+        {
+            GetFiles(directory, pattern, paths, settings.Recursive);
+        }
     }
 
     if (settings.OutputFiles is { })
@@ -214,7 +217,7 @@ class Settings
     public DirectoryInfo? InputDirectory { get; set; } = null;
     public FileInfo[]? OutputFiles { get; set; } = null;
     public DirectoryInfo? OutputDirectory { get; set; } = null;
-    public string Pattern { get; set; } = "*.*";
+    public string[] Pattern { get; set; } = { "*.*" };
     public string Format { get; set; } = "br";
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
     public int Threads { get; set; } = 1;
