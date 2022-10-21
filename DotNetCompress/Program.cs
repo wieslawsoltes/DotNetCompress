@@ -155,7 +155,7 @@ static void Run(Settings settings)
 
     if (paths.Count > 0)
     {
-        Console.WriteLine($"Done: {sw.Elapsed})");
+        Console.WriteLine($"Done: {sw.Elapsed}");
     }
 }
 
