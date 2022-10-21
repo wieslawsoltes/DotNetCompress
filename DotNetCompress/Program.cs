@@ -43,6 +43,11 @@ var optionThreads = new Option(new[] { "--threads", "-t" }, "The number of paral
     Argument = new Argument<int>(getDefaultValue: () => 1)
 };
 
+var optionRecursive = new Option(new[] { "--recursive", "-r" }, "Recurse into subdirectories of input directory search")
+{
+    Argument = new Argument<bool>(getDefaultValue: () => true)
+};
+
 var rootCommand = new RootCommand
 {
     Description = "An .NET compression tool."
@@ -56,15 +61,25 @@ rootCommand.AddOption(optionPattern);
 rootCommand.AddOption(optionFormat);
 rootCommand.AddOption(optionLevel);
 rootCommand.AddOption(optionThreads);
+rootCommand.AddOption(optionRecursive);
 
 rootCommand.Handler = CommandHandler.Create(static (Settings settings) => Run(settings));
 
 return await rootCommand.InvokeAsync(args);
 
-static void GetFiles(DirectoryInfo directory, string pattern, List<FileInfo> paths)
+static void GetFiles(DirectoryInfo directory, string pattern, List<FileInfo> paths, bool recursive)
 {
     var files = Directory.EnumerateFiles(directory.FullName, pattern);
+
     paths.AddRange(files.Select(path => new FileInfo(path)));
+
+    if (recursive)
+    {
+        foreach (var subDirectory in directory.EnumerateDirectories())
+        {
+            GetFiles(subDirectory, pattern, paths, recursive);
+        }
+    }
 }
 
 static void Run(Settings settings)
@@ -86,11 +101,10 @@ static void Run(Settings settings)
         if (string.IsNullOrEmpty(pattern))
         {
             Console.WriteLine("Error: The pattern can not be null or empty.");
+            return;
         }
-        else
-        {
-            GetFiles(directory, pattern, paths);
-        }
+
+        GetFiles(directory, pattern, paths, settings.Recursive);
     }
 
     if (settings.OutputFiles is { })
@@ -204,6 +218,7 @@ class Settings
     public string Format { get; set; } = "br";
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
     public int Threads { get; set; } = 1;
+    public bool Recursive { get; set; } = true;
 }
 
 record Job(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);

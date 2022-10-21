@@ -15,7 +15,7 @@ An .NET compression tool. Supported file formats are Brotli and GZip.
 ### Install
 
 ```
-dotnet tool install --global DotNetCompress --version 1.0.0-preview.5
+dotnet tool install --global DotNetCompress --version 1.0.0-preview.6
 ```
 
 ### Uninstall
@@ -27,7 +27,7 @@ dotnet tool uninstall -g DotNetCompress
 ### Command-line help
 
 ```
-DotNetCompress:           
+DotNetCompress:
   An .NET compression tool.
 
 Usage:
@@ -42,6 +42,7 @@ Options:
   --format <format>                                           The compression file format (br, gz)
   -l, --level <Fastest|NoCompression|Optimal|SmallestSize>    The compression level (Optimal, Fastest, NoCompression, SmallestSize)
   -t, --threads <threads>                                     The number of parallel job threads
+  -r, --recursive <recursive>                                 Recurse into subdirectories of input directory search
   --version                                                   Show version information
   -?, -h, --help                                              Show help and usage information
 ```
