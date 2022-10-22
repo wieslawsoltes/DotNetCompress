@@ -67,6 +67,11 @@ var optionRecursive = new Option(
     Argument = new Argument<bool>(getDefaultValue: () => true)
 };
 
+var optionQuiet = new Option(new[] { "--quiet" }, "Set verbosity level to quiet")
+{
+    Argument = new Argument<bool>()
+};
+
 var rootCommand = new RootCommand {Description = "An .NET compression tool."};
 
 rootCommand.AddOption(optionInputFiles);
@@ -78,6 +83,7 @@ rootCommand.AddOption(optionFormat);
 rootCommand.AddOption(optionLevel);
 rootCommand.AddOption(optionThreads);
 rootCommand.AddOption(optionRecursive);
+rootCommand.AddOption(optionQuiet);
 
 rootCommand.Handler = CommandHandler.Create(static (Settings settings) => App.Run(settings));
 
