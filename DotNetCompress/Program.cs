@@ -4,55 +4,70 @@ using System.IO.Compression;
 using DotNetCompress;
 using DotNetCompress.Model;
 
-var optionInputFiles = new Option(new[] { "--inputFiles", "-f" }, "The relative or absolute path to the input files")
+var optionInputFiles = new Option(
+    new[] {"--inputFiles", "-f"},
+    "The relative or absolute path to the input files")
 {
     Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
 };
 
-var optionInputDirectory = new Option(new[] { "--inputDirectory", "-d" }, "The relative or absolute path to the input directory")
+var optionInputDirectory = new Option(
+    new[] {"--inputDirectory", "-d"},
+    "The relative or absolute path to the input directory")
 {
     Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
 };
 
-var optionOutputDirectory = new Option(new[] { "--outputDirectory", "-o" }, "The relative or absolute path to the output directory")
+var optionOutputDirectory = new Option(
+    new[] {"--outputDirectory", "-o"},
+    "The relative or absolute path to the output directory")
 {
     Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
 };
 
-var optionOutputFiles = new Option(new[] { "--outputFiles" }, "The relative or absolute path to the output files")
+var optionOutputFiles = new Option(
+    new[] {"--outputFiles"},
+    "The relative or absolute path to the output files")
 {
     Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
 };
 
-var optionPattern = new Option(new[] { "--pattern", "-p" }, "The search string to match against the names of files in the input directory")
+var optionPattern = new Option(
+    new[] {"--pattern", "-p"},
+    "The search string to match against the names of files in the input directory")
 {
-    Argument = new Argument<string[]?>(getDefaultValue: () => new []{ "*.*" })
+    Argument = new Argument<string[]?>(getDefaultValue: () => new[] {"*.*"})
 };
 
-var optionFormat = new Option(new[] { "--format" }, "The compression file format (br, gz)")
+var optionFormat = new Option(
+    new[] {"--format"},
+    "The compression file format (br, gz)")
 {
     Argument = new Argument<string>(getDefaultValue: () => "br")
 };
 
-var optionLevel = new Option(new[] { "--level", "-l" }, "The compression level (Optimal, Fastest, NoCompression, SmallestSize)")
+var optionLevel = new Option(
+    new[] {"--level", "-l"},
+    "The compression level (Optimal, Fastest, NoCompression, SmallestSize)")
 {
     Argument = new Argument<CompressionLevel>(getDefaultValue: () => CompressionLevel.SmallestSize)
 };
 
-var optionThreads = new Option(new[] { "--threads", "-t" }, "The number of parallel job threads")
+var optionThreads = new Option(
+    new[] {"--threads", "-t"},
+    "The number of parallel job threads")
 {
     Argument = new Argument<int>(getDefaultValue: () => 1)
 };
 
-var optionRecursive = new Option(new[] { "--recursive", "-r" }, "Recurse into subdirectories of input directory search")
+var optionRecursive = new Option(
+    new[] {"--recursive", "-r"},
+    "Recurse into subdirectories of input directory search")
 {
     Argument = new Argument<bool>(getDefaultValue: () => true)
 };
 
-var rootCommand = new RootCommand
-{
-    Description = "An .NET compression tool."
-};
+var rootCommand = new RootCommand {Description = "An .NET compression tool."};
 
 rootCommand.AddOption(optionInputFiles);
 rootCommand.AddOption(optionInputDirectory);
