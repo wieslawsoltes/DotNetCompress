@@ -13,4 +13,5 @@ internal class Settings
     public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
     public int Threads { get; set; } = 1;
     public bool Recursive { get; set; } = true;
+    public bool Quiet { get; set; }
 }
