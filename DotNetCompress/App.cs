@@ -36,7 +36,7 @@ internal static class App
         var threads = settings.Threads;
         var jobs = GetJobs(settings, paths);
 
-        Parallel.For(0, jobs.Count, new ParallelOptions { MaxDegreeOfParallelism = threads }, i =>
+        Parallel.For(0, jobs.Count, new ParallelOptions {MaxDegreeOfParallelism = threads}, i =>
         {
             var job = jobs[i];
             try
@@ -53,7 +53,6 @@ internal static class App
         sw.Stop();
 
         Console.WriteLine($"Done: {sw.Elapsed}");
-
     }
 
     private static List<FileInfo>? GetPaths(Settings settings)
