@@ -33,6 +33,7 @@ internal static class App
 
         var sw = Stopwatch.StartNew();
 
+        var quiet = settings.Quiet;
         var threads = settings.Threads;
         var jobs = GetJobs(settings, paths);
 
@@ -41,18 +42,21 @@ internal static class App
             var job = jobs[i];
             try
             {
-                Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel);
+                Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel, quiet);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{i}] Error: {job.InputPath}");
+                Console.WriteLine($"Error: {job.InputPath}");
                 Console.WriteLine(ex);
             }
         });
 
         sw.Stop();
 
-        Console.WriteLine($"Done: {sw.Elapsed}");
+        if (!settings.Quiet)
+        {
+            Console.WriteLine($"Done: {sw.Elapsed}");
+        }
     }
 
     private static List<FileInfo>? GetPaths(Settings settings)
@@ -143,9 +147,12 @@ internal static class App
         input.CopyTo(compressor);
     }
 
-    private static void Compress(string inputPath, string outputPath, string format, CompressionLevel compressionLevel)
+    private static void Compress(string inputPath, string outputPath, string format, CompressionLevel compressionLevel, bool quiet)
     {
-        Console.WriteLine($"Compressing: {outputPath}");
+        if (!quiet)
+        {
+            Console.WriteLine($"Compressing: {outputPath}");
+        }
 
         switch (format.ToLower())
         {
