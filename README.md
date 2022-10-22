@@ -42,7 +42,8 @@ Options:
   --format <format>                                           The compression file format (br, gz)
   -l, --level <Fastest|NoCompression|Optimal|SmallestSize>    The compression level (Optimal, Fastest, NoCompression, SmallestSize)
   -t, --threads <threads>                                     The number of parallel job threads
-  -r, --recursive <recursive>                                 Recurse into subdirectories of input directory search
+  -r, --recursive                                             Recurse into subdirectories of input directory search
+  --quiet                                                     Set verbosity level to quiet
   --version                                                   Show version information
   -?, -h, --help                                              Show help and usage information
 ```
