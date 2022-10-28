@@ -50,6 +50,24 @@ Options:
   -?, -h, --help                                              Show help and usage information
 ```
 
+### Brotli example
+
+```
+dotnetcompress -d /publish/files/path -p "*.dll" --format br -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format br -l Optimal
+dotnetcompress -d /publish/files/path -p "*.js" --format br -l Optimal
+dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format br -l Optimal
+```
+
+### GZip example
+
+```
+dotnetcompress -d /publish/files/path -p "*.dll" --format gz -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format gz -l Optimal
+dotnetcompress -d /publish/files/path -p "*.js" --format gz -l Optimal
+dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format gz -l Optimal
+```
+
 # Library
 
 Install NuGet package [DotNetCompress.Core](https://www.nuget.org/packages/DotNetCompress.Core)
@@ -70,24 +88,6 @@ var settings = new FileCompressorSettings()
 };
 
 FileCompressor.Run(settings);
-```
-
-### Brotli example
-
-```
-dotnetcompress -d /publish/files/path -p "*.dll" --format br -l Optimal
-dotnetcompress -d /publish/files/path -p "*.wasm" --format br -l Optimal
-dotnetcompress -d /publish/files/path -p "*.js" --format br -l Optimal
-dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format br -l Optimal
-```
-
-### GZip example
-
-```
-dotnetcompress -d /publish/files/path -p "*.dll" --format gz -l Optimal
-dotnetcompress -d /publish/files/path -p "*.wasm" --format gz -l Optimal
-dotnetcompress -d /publish/files/path -p "*.js" --format gz -l Optimal
-dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format gz -l Optimal
 ```
 
 ## License
