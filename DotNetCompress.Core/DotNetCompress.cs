@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
-using DotNetCompress.Model;
+using DotNetCompress.Core.Model;
 
-namespace DotNetCompress;
+namespace DotNetCompress.Core;
 
-internal static class App
+public static class DotNetCompress
 {
     public static void Run(Settings settings)
     {

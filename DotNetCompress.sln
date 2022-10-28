@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{388C0B48
 		.gitignore = .gitignore
 		global.json = global.json
 		nuget.config = nuget.config
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{F663AB78-E7AB-4939-A47D-10F9BB0DC958}"
@@ -18,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{F663AB78-E
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4830A2ED-9736-420A-80F4-36449EBA1475}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCompress.Core", "DotNetCompress.Core\DotNetCompress.Core.csproj", "{A3448FAF-2583-466F-8EE8-3916B23E56AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,8 +32,13 @@ Global
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3448FAF-2583-466F-8EE8-3916B23E56AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3448FAF-2583-466F-8EE8-3916B23E56AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3448FAF-2583-466F-8EE8-3916B23E56AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3448FAF-2583-466F-8EE8-3916B23E56AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3FB69748-CB0D-4EA8-BFE3-C2D34D5FA9B6} = {4830A2ED-9736-420A-80F4-36449EBA1475}
+		{A3448FAF-2583-466F-8EE8-3916B23E56AB} = {4830A2ED-9736-420A-80F4-36449EBA1475}
 	EndGlobalSection
 EndGlobal

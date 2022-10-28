@@ -3,6 +3,9 @@
 [![NuGet](https://img.shields.io/nuget/v/DotNetCompress.svg)](https://www.nuget.org/packages/DotNetCompress)
 [![NuGet](https://img.shields.io/nuget/dt/DotNetCompress.svg)](https://www.nuget.org/packages/DotNetCompress)
 
+[![NuGet](https://img.shields.io/nuget/v/DotNetCompress.Core.svg)](https://www.nuget.org/packages/DotNetCompress.Core)
+[![NuGet](https://img.shields.io/nuget/dt/DotNetCompress.Core.svg)](https://www.nuget.org/packages/DotNetCompress.Core)
+
 [![GitHub release](https://img.shields.io/github/release/wieslawsoltes/DotNetCompress)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github All Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/latest/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
@@ -11,11 +14,10 @@ An .NET compression tool. Supported file formats are Brotli and GZip.
 
 # Usage
 
-
 ### Install
 
 ```
-dotnet tool install --global DotNetCompress --version 1.0.0
+dotnet tool install --global DotNetCompress --version 1.1.0
 ```
 
 ### Uninstall
@@ -56,7 +58,6 @@ dotnetcompress -d /publish/files/path -p "*.wasm" --format br -l Optimal
 dotnetcompress -d /publish/files/path -p "*.js" --format br -l Optimal
 dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format br -l Optimal
 ```
-
 
 ### GZip example
 
