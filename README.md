@@ -17,7 +17,7 @@ An .NET compression tool. Supported file formats are Brotli and GZip.
 ### Install
 
 ```
-dotnet tool install --global DotNetCompress --version 1.1.0
+dotnet tool install --global DotNetCompress --version 2.0.0
 ```
 
 ### Uninstall
@@ -48,6 +48,28 @@ Options:
   --quiet                                                     Set verbosity level to quiet
   --version                                                   Show version information
   -?, -h, --help                                              Show help and usage information
+```
+
+# Library
+
+Install NuGet package [DotNetCompress.Core](https://www.nuget.org/packages/DotNetCompress.Core)
+
+```C#
+using System.IO.Compression;
+using DotNetCompress.Core;
+
+var settings = new FileCompressorSettings()
+{
+    InputDirectory = new DirectoryInfo(@"C:\Temp"),
+    Pattern = new []{ "*.dll", "*.wasm", "*.js" },
+    Format = "br",
+    Level = CompressionLevel.Fastest,
+    Threads = 4,
+    Recursive = true,
+    Quiet = false
+};
+
+FileCompressor.Run(settings);
 ```
 
 ### Brotli example

@@ -1,41 +1,40 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
-using DotNetCompress.Core.Model;
 
 namespace DotNetCompress.Core;
 
-public static class DotNetCompress
+public static class FileCompressor
 {
-    public static void Run(Settings settings)
+    public static void Run(FileCompressorSettings fileCompressorSettings)
     {
-        var paths = GetPaths(settings);
+        var paths = GetPaths(fileCompressorSettings);
         if (paths == null || paths.Count == 0)
         {
             return;
         }
 
-        if (settings.OutputFiles is { })
+        if (fileCompressorSettings.OutputFiles is { })
         {
-            if (paths.Count > 0 && paths.Count != settings.OutputFiles.Length)
+            if (paths.Count > 0 && paths.Count != fileCompressorSettings.OutputFiles.Length)
             {
                 Console.WriteLine("Error: The number of the output files must match the number of the input files.");
                 return;
             }
         }
 
-        if (settings.OutputDirectory is { } && !string.IsNullOrEmpty(settings.OutputDirectory.FullName))
+        if (fileCompressorSettings.OutputDirectory is { } && !string.IsNullOrEmpty(fileCompressorSettings.OutputDirectory.FullName))
         {
-            if (!Directory.Exists(settings.OutputDirectory.FullName))
+            if (!Directory.Exists(fileCompressorSettings.OutputDirectory.FullName))
             {
-                Directory.CreateDirectory(settings.OutputDirectory.FullName);
+                Directory.CreateDirectory(fileCompressorSettings.OutputDirectory.FullName);
             }
         }
 
         var sw = Stopwatch.StartNew();
 
-        var quiet = settings.Quiet;
-        var threads = settings.Threads;
-        var jobs = GetJobs(settings, paths);
+        var quiet = fileCompressorSettings.Quiet;
+        var threads = fileCompressorSettings.Threads;
+        var jobs = GetJobs(fileCompressorSettings, paths);
 
         Parallel.For(0, jobs.Count, new ParallelOptions {MaxDegreeOfParallelism = threads}, i =>
         {
@@ -53,25 +52,25 @@ public static class DotNetCompress
 
         sw.Stop();
 
-        if (!settings.Quiet)
+        if (!fileCompressorSettings.Quiet)
         {
             Console.WriteLine($"Done: {sw.Elapsed}");
         }
     }
 
-    private static List<FileInfo>? GetPaths(Settings settings)
+    private static List<FileInfo>? GetPaths(FileCompressorSettings fileCompressorSettings)
     {
         var paths = new List<FileInfo>();
 
-        if (settings.InputFiles is { })
+        if (fileCompressorSettings.InputFiles is { })
         {
-            paths.AddRange(settings.InputFiles);
+            paths.AddRange(fileCompressorSettings.InputFiles);
         }
 
-        if (settings.InputDirectory is { })
+        if (fileCompressorSettings.InputDirectory is { })
         {
-            var directory = settings.InputDirectory;
-            var patterns = settings.Pattern;
+            var directory = fileCompressorSettings.InputDirectory;
+            var patterns = fileCompressorSettings.Pattern;
             if (patterns.Length == 0)
             {
                 Console.WriteLine("Error: The pattern can not be empty.");
@@ -80,21 +79,21 @@ public static class DotNetCompress
 
             foreach (var pattern in patterns)
             {
-                GetFiles(directory, pattern, paths, settings.Recursive);
+                GetFiles(directory, pattern, paths, fileCompressorSettings.Recursive);
             }
         }
 
         return paths;
     }
 
-    private static List<Job> GetJobs(Settings settings, List<FileInfo> paths)
+    private static List<FileCompressorJob> GetJobs(FileCompressorSettings fileCompressorSettings, List<FileInfo> paths)
     {
-        var jobs = new List<Job>();
+        var jobs = new List<FileCompressorJob>();
 
         for (var i = 0; i < paths.Count; i++)
         {
             var inputPath = paths[i];
-            var outputFile = settings.OutputFiles?[i];
+            var outputFile = fileCompressorSettings.OutputFiles?[i];
             string outputPath;
 
             if (outputFile is { })
@@ -103,14 +102,14 @@ public static class DotNetCompress
             }
             else
             {
-                outputPath = inputPath.FullName + "." + settings.Format.ToLower();
-                if (settings.OutputDirectory is { } && !string.IsNullOrEmpty(settings.OutputDirectory.FullName))
+                outputPath = inputPath.FullName + "." + fileCompressorSettings.Format.ToLower();
+                if (fileCompressorSettings.OutputDirectory is { } && !string.IsNullOrEmpty(fileCompressorSettings.OutputDirectory.FullName))
                 {
-                    outputPath = Path.Combine(settings.OutputDirectory.FullName, Path.GetFileName(outputPath));
+                    outputPath = Path.Combine(fileCompressorSettings.OutputDirectory.FullName, Path.GetFileName(outputPath));
                 }
             }
 
-            jobs.Add(new Job(inputPath.FullName, outputPath, settings.Format, settings.Level));
+            jobs.Add(new FileCompressorJob(inputPath.FullName, outputPath, fileCompressorSettings.Format, fileCompressorSettings.Level));
         }
 
         return jobs;

@@ -2,7 +2,6 @@
 using System.CommandLine.Invocation;
 using System.IO.Compression;
 using DotNetCompress.Core;
-using DotNetCompress.Core.Model;
 
 var optionInputFiles = new Option(
     new[] {"--inputFiles", "-f"},
@@ -85,6 +84,6 @@ rootCommand.AddOption(optionThreads);
 rootCommand.AddOption(optionRecursive);
 rootCommand.AddOption(optionQuiet);
 
-rootCommand.Handler = CommandHandler.Create(static (Settings settings) => DotNetCompress.Core.DotNetCompress.Run(settings));
+rootCommand.Handler = CommandHandler.Create(static (FileCompressorSettings settings) => FileCompressor.Run(settings));
 
 return await rootCommand.InvokeAsync(args);

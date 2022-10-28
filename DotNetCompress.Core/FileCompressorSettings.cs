@@ -1,8 +1,8 @@
 ﻿using System.IO.Compression;
 
-namespace DotNetCompress.Core.Model;
+namespace DotNetCompress.Core;
 
-public class Settings
+public class FileCompressorSettings
 {
     public FileInfo[]? InputFiles { get; set; } = null;
     public DirectoryInfo? InputDirectory { get; set; } = null;
