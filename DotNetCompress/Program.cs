@@ -88,9 +88,13 @@ rootCommand.Handler = CommandHandler.Create(static (FileCompressorSettings setti
 
 return await rootCommand.InvokeAsync(args);
 
-internal record FileCompressorJob(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);
+record FileCompressorJob(
+    string InputPath, 
+    string OutputPath, 
+    string Format, 
+    CompressionLevel CompressionLevel);
 
-public class FileCompressorSettings
+class FileCompressorSettings
 {
     public FileInfo[]? InputFiles { get; set; } = null;
     public DirectoryInfo? InputDirectory { get; set; } = null;
@@ -104,7 +108,7 @@ public class FileCompressorSettings
     public bool Quiet { get; set; } = false;
 }
 
-public static class FileCompressor
+static class FileCompressor
 {
     public static Action<object>? Log = Console.WriteLine;
 
