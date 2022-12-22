@@ -95,14 +95,14 @@ RootCommand CreateRootCommand()
     return rootCommand;
 }
 
-record FileCompressorJob(
+internal record FileCompressorJob(
     string InputPath, 
     string OutputPath, 
     string Format, 
     CompressionLevel CompressionLevel,
     bool Quiet);
 
-class FileCompressorSettings
+internal class FileCompressorSettings
 {
     public FileInfo[]? InputFiles { get; set; } = null;
     public DirectoryInfo? InputDirectory { get; set; } = null;
@@ -116,9 +116,9 @@ class FileCompressorSettings
     public bool Quiet { get; set; } = false;
 }
 
-static class FileCompressor
+internal static class FileCompressor
 {
-    public static Action<object>? Log = Console.WriteLine;
+    private static readonly Action<object>? s_log = Console.WriteLine;
 
     public static void Run(FileCompressorSettings fileCompressorSettings)
     {
@@ -134,7 +134,7 @@ static class FileCompressor
             {
                 if (!fileCompressorSettings.Quiet)
                 {
-                    Log?.Invoke("Error: The number of the output files must match the number of the input files.");
+                    s_log?.Invoke("Error: The number of the output files must match the number of the input files.");
                 }
 
                 return;
@@ -161,7 +161,7 @@ static class FileCompressor
                 {
                     if (!job.Quiet)
                     {
-                        Log?.Invoke($"Compressing: {job.OutputPath}");
+                        s_log?.Invoke($"Compressing: {job.OutputPath}");
                     }
 
                     Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel);
@@ -170,8 +170,8 @@ static class FileCompressor
                 {
                     if (!job.Quiet)
                     {
-                        Log?.Invoke($"Error: {job.InputPath}");
-                        Log?.Invoke(ex);
+                        s_log?.Invoke($"Error: {job.InputPath}");
+                        s_log?.Invoke(ex);
                     }
                 }
             });
@@ -180,7 +180,7 @@ static class FileCompressor
 
         if (!fileCompressorSettings.Quiet)
         {
-            Log?.Invoke($"Done: {sw.Elapsed}");
+            s_log?.Invoke($"Done: {sw.Elapsed}");
         }
     }
 
@@ -201,7 +201,7 @@ static class FileCompressor
             {
                 if (!fileCompressorSettings.Quiet)
                 {
-                    Log?.Invoke("Error: The pattern can not be empty.");
+                    s_log?.Invoke("Error: The pattern can not be empty.");
                 }
                 return null;
             }
@@ -250,12 +250,14 @@ static class FileCompressor
 
         paths.AddRange(files.Select(path => new FileInfo(path)));
 
-        if (recursive)
+        if (!recursive)
         {
-            foreach (var subDirectory in directory.EnumerateDirectories())
-            {
-                GetFiles(subDirectory, pattern, paths, recursive);
-            }
+            return;
+        }
+
+        foreach (var subDirectory in directory.EnumerateDirectories())
+        {
+            GetFiles(subDirectory, pattern, paths, recursive);
         }
     }
 
@@ -280,15 +282,11 @@ static class FileCompressor
         switch (format.ToLower())
         {
             case "br":
-            {
                 CompressBrotli(inputPath, outputPath, compressionLevel);
                 break;
-            }
             case "gz":
-            {
                 CompressGZip(inputPath, outputPath, compressionLevel);
                 break;
-            }
         }
     }
 }
