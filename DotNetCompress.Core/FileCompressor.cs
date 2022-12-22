@@ -3,8 +3,26 @@ using System.IO.Compression;
 
 namespace DotNetCompress.Core;
 
+internal record FileCompressorJob(string InputPath, string OutputPath, string Format, CompressionLevel CompressionLevel);
+
+public class FileCompressorSettings
+{
+    public FileInfo[]? InputFiles { get; set; } = null;
+    public DirectoryInfo? InputDirectory { get; set; } = null;
+    public FileInfo[]? OutputFiles { get; set; } = null;
+    public DirectoryInfo? OutputDirectory { get; set; } = null;
+    public string[] Pattern { get; set; } = {"*.*"};
+    public string Format { get; set; } = "br";
+    public CompressionLevel Level { get; set; } = CompressionLevel.SmallestSize;
+    public int Threads { get; set; } = 1;
+    public bool Recursive { get; set; } = true;
+    public bool Quiet { get; set; }
+}
+
 public static class FileCompressor
 {
+    public static Action<object>? Log = Console.WriteLine;
+
     public static void Run(FileCompressorSettings fileCompressorSettings)
     {
         var paths = GetPaths(fileCompressorSettings);
@@ -17,7 +35,7 @@ public static class FileCompressor
         {
             if (paths.Count > 0 && paths.Count != fileCompressorSettings.OutputFiles.Length)
             {
-                Console.WriteLine("Error: The number of the output files must match the number of the input files.");
+                Log?.Invoke("Error: The number of the output files must match the number of the input files.");
                 return;
             }
         }
@@ -45,8 +63,8 @@ public static class FileCompressor
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {job.InputPath}");
-                Console.WriteLine(ex);
+                Log?.Invoke($"Error: {job.InputPath}");
+                Log?.Invoke(ex);
             }
         });
 
@@ -54,7 +72,7 @@ public static class FileCompressor
 
         if (!fileCompressorSettings.Quiet)
         {
-            Console.WriteLine($"Done: {sw.Elapsed}");
+            Log?.Invoke($"Done: {sw.Elapsed}");
         }
     }
 
@@ -73,7 +91,7 @@ public static class FileCompressor
             var patterns = fileCompressorSettings.Pattern;
             if (patterns.Length == 0)
             {
-                Console.WriteLine("Error: The pattern can not be empty.");
+                Log?.Invoke("Error: The pattern can not be empty.");
                 return null;
             }
 
@@ -150,7 +168,7 @@ public static class FileCompressor
     {
         if (!quiet)
         {
-            Console.WriteLine($"Compressing: {outputPath}");
+            Log?.Invoke($"Compressing: {outputPath}");
         }
 
         switch (format.ToLower())
