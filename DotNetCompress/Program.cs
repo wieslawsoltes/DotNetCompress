@@ -99,7 +99,8 @@ record FileCompressorJob(
     string InputPath, 
     string OutputPath, 
     string Format, 
-    CompressionLevel CompressionLevel);
+    CompressionLevel CompressionLevel,
+    bool Quiet);
 
 class FileCompressorSettings
 {
@@ -131,7 +132,11 @@ static class FileCompressor
         {
             if (paths.Count > 0 && paths.Count != fileCompressorSettings.OutputFiles.Length)
             {
-                Log?.Invoke("Error: The number of the output files must match the number of the input files.");
+                if (!fileCompressorSettings.Quiet)
+                {
+                    Log?.Invoke("Error: The number of the output files must match the number of the input files.");
+                }
+
                 return;
             }
         }
@@ -146,23 +151,30 @@ static class FileCompressor
 
         var sw = Stopwatch.StartNew();
 
-        var quiet = fileCompressorSettings.Quiet;
-        var threads = fileCompressorSettings.Threads;
         var jobs = GetJobs(fileCompressorSettings, paths);
 
-        Parallel.For(0, jobs.Count, new ParallelOptions {MaxDegreeOfParallelism = threads}, i =>
-        {
-            var job = jobs[i];
-            try
+        Parallel.For(0, jobs.Count, new ParallelOptions {MaxDegreeOfParallelism = fileCompressorSettings.Threads}, 
+            i =>
             {
-                Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel, quiet);
-            }
-            catch (Exception ex)
-            {
-                Log?.Invoke($"Error: {job.InputPath}");
-                Log?.Invoke(ex);
-            }
-        });
+                var job = jobs[i];
+                try
+                {
+                    if (!job.Quiet)
+                    {
+                        Log?.Invoke($"Compressing: {job.OutputPath}");
+                    }
+
+                    Compress(job.InputPath, job.OutputPath, job.Format, job.CompressionLevel);
+                }
+                catch (Exception ex)
+                {
+                    if (!job.Quiet)
+                    {
+                        Log?.Invoke($"Error: {job.InputPath}");
+                        Log?.Invoke(ex);
+                    }
+                }
+            });
 
         sw.Stop();
 
@@ -187,7 +199,10 @@ static class FileCompressor
             var patterns = fileCompressorSettings.Pattern;
             if (patterns.Length == 0)
             {
-                Log?.Invoke("Error: The pattern can not be empty.");
+                if (!fileCompressorSettings.Quiet)
+                {
+                    Log?.Invoke("Error: The pattern can not be empty.");
+                }
                 return null;
             }
 
@@ -223,7 +238,7 @@ static class FileCompressor
                 }
             }
 
-            jobs.Add(new FileCompressorJob(inputPath.FullName, outputPath, fileCompressorSettings.Format, fileCompressorSettings.Level));
+            jobs.Add(new FileCompressorJob(inputPath.FullName, outputPath, fileCompressorSettings.Format, fileCompressorSettings.Level, fileCompressorSettings.Quiet));
         }
 
         return jobs;
@@ -260,13 +275,8 @@ static class FileCompressor
         input.CopyTo(compressor);
     }
 
-    private static void Compress(string inputPath, string outputPath, string format, CompressionLevel compressionLevel, bool quiet)
+    private static void Compress(string inputPath, string outputPath, string format, CompressionLevel compressionLevel)
     {
-        if (!quiet)
-        {
-            Log?.Invoke($"Compressing: {outputPath}");
-        }
-
         switch (format.ToLower())
         {
             case "br":
