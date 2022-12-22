@@ -3,9 +3,6 @@
 [![NuGet](https://img.shields.io/nuget/v/DotNetCompress.svg)](https://www.nuget.org/packages/DotNetCompress)
 [![NuGet](https://img.shields.io/nuget/dt/DotNetCompress.svg)](https://www.nuget.org/packages/DotNetCompress)
 
-[![NuGet](https://img.shields.io/nuget/v/DotNetCompress.Core.svg)](https://www.nuget.org/packages/DotNetCompress.Core)
-[![NuGet](https://img.shields.io/nuget/dt/DotNetCompress.Core.svg)](https://www.nuget.org/packages/DotNetCompress.Core)
-
 [![GitHub release](https://img.shields.io/github/release/wieslawsoltes/DotNetCompress)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github All Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/latest/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
@@ -66,28 +63,6 @@ dotnetcompress -d /publish/files/path -p "*.dll" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.wasm" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.js" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format gz -l Optimal
-```
-
-# Library
-
-Install NuGet package [DotNetCompress.Core](https://www.nuget.org/packages/DotNetCompress.Core)
-
-```C#
-using System.IO.Compression;
-using DotNetCompress.Core;
-
-var settings = new FileCompressorSettings()
-{
-    InputDirectory = new DirectoryInfo(@"C:\Temp"),
-    Pattern = new []{ "*.dll", "*.wasm", "*.js" },
-    Format = "br",
-    Level = CompressionLevel.Fastest,
-    Threads = 4,
-    Recursive = true,
-    Quiet = false
-};
-
-FileCompressor.Run(settings);
 ```
 
 ## License
