@@ -14,7 +14,7 @@ An .NET compression tool. Supported file formats are Brotli and GZip.
 ### Install
 
 ```
-dotnet tool install --global DotNetCompress --version 3.0.0
+dotnet tool install --global DotNetCompress --version 4.0.0
 ```
 
 ### Uninstall
