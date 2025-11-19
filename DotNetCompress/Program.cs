@@ -1,96 +1,100 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.IO.Compression;
 
-await CreateRootCommand().InvokeAsync(args);
+await CreateRootCommand().Parse(args).InvokeAsync();
 
 RootCommand CreateRootCommand()
 {
-    var optionInputFiles = new Option(
-        new[] { "--inputFiles", "-f" },
-        "The relative or absolute path to the input files")
+    var optionInputFiles = new Option<FileInfo[]?>("--inputFiles", "-f")
     {
-        Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
+        Description = "The relative or absolute path to the input files",
+        AllowMultipleArgumentsPerToken = true
     };
 
-    var optionInputDirectory = new Option(
-        new[] { "--inputDirectory", "-d" },
-        "The relative or absolute path to the input directory")
+    var optionInputDirectory = new Option<DirectoryInfo?>("--inputDirectory", "-d")
     {
-        Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
+        Description = "The relative or absolute path to the input directory"
     };
 
-    var optionOutputDirectory = new Option(
-        new[] { "--outputDirectory", "-o" },
-        "The relative or absolute path to the output directory")
+    var optionOutputDirectory = new Option<DirectoryInfo?>("--outputDirectory", "-o")
     {
-        Argument = new Argument<DirectoryInfo?>(getDefaultValue: () => null)
+        Description = "The relative or absolute path to the output directory"
     };
 
-    var optionOutputFiles = new Option(
-        new[] { "--outputFiles" },
-        "The relative or absolute path to the output files")
+    var optionOutputFiles = new Option<FileInfo[]?>("--outputFiles")
     {
-        Argument = new Argument<FileInfo[]?>(getDefaultValue: () => null)
+        Description = "The relative or absolute path to the output files",
+        AllowMultipleArgumentsPerToken = true
     };
 
-    var optionPattern = new Option(
-        new[] { "--pattern", "-p" },
-        "The search string to match against the names of files in the input directory")
+    var optionPattern = new Option<string[]>("--pattern", "-p")
     {
-        Argument = new Argument<string[]?>(getDefaultValue: () => new[] { "*.*" })
+        Description = "The search string to match against the names of files in the input directory",
+        DefaultValueFactory = _ => new[] { "*.*" },
+        AllowMultipleArgumentsPerToken = true
     };
 
-    var optionFormat = new Option(
-        new[] { "--format" },
-        "The compression file format (br, gz)")
+    var optionFormat = new Option<string>("--format")
     {
-        Argument = new Argument<string>(getDefaultValue: () => "br")
+        Description = "The compression file format (br, gz, zlib, def)",
+        DefaultValueFactory = _ => "br"
     };
 
-    var optionLevel = new Option(
-        new[] { "--level", "-l" },
-        "The compression level (Optimal, Fastest, NoCompression, SmallestSize)")
+    var optionLevel = new Option<CompressionLevel>("--level", "-l")
     {
-        Argument = new Argument<CompressionLevel>(getDefaultValue: () => CompressionLevel.SmallestSize)
+        Description = "The compression level (Optimal, Fastest, NoCompression, SmallestSize)",
+        DefaultValueFactory = _ => CompressionLevel.SmallestSize
     };
 
-    var optionThreads = new Option(
-        new[] { "--threads", "-t" },
-        "The number of parallel job threads")
+    var optionThreads = new Option<int>("--threads", "-t")
     {
-        Argument = new Argument<int>(getDefaultValue: () => 1)
+        Description = "The number of parallel job threads",
+        DefaultValueFactory = _ => 1
     };
 
-    var optionRecursive = new Option(
-        new[] { "--recursive", "-r" },
-        "Recurse into subdirectories of input directory search")
+    var optionRecursive = new Option<bool>("--recursive", "-r")
     {
-        Argument = new Argument<bool>(getDefaultValue: () => true)
+        Description = "Recurse into subdirectories of input directory search",
+        DefaultValueFactory = _ => true
     };
 
-    var optionQuiet = new Option(new[] { "--quiet" }, "Set verbosity level to quiet")
+    var optionQuiet = new Option<bool>("--quiet")
     {
-        Argument = new Argument<bool>()
+        Description = "Set verbosity level to quiet"
     };
 
-    var rootCommand = new RootCommand { Description = "An .NET compression tool." };
+    var rootCommand = new RootCommand("An .NET compression tool.");
 
-    rootCommand.AddOption(optionInputFiles);
-    rootCommand.AddOption(optionInputDirectory);
-    rootCommand.AddOption(optionOutputDirectory);
-    rootCommand.AddOption(optionOutputFiles);
-    rootCommand.AddOption(optionPattern);
-    rootCommand.AddOption(optionFormat);
-    rootCommand.AddOption(optionLevel);
-    rootCommand.AddOption(optionThreads);
-    rootCommand.AddOption(optionRecursive);
-    rootCommand.AddOption(optionQuiet);
+    rootCommand.Options.Add(optionInputFiles);
+    rootCommand.Options.Add(optionInputDirectory);
+    rootCommand.Options.Add(optionOutputDirectory);
+    rootCommand.Options.Add(optionOutputFiles);
+    rootCommand.Options.Add(optionPattern);
+    rootCommand.Options.Add(optionFormat);
+    rootCommand.Options.Add(optionLevel);
+    rootCommand.Options.Add(optionThreads);
+    rootCommand.Options.Add(optionRecursive);
+    rootCommand.Options.Add(optionQuiet);
 
-    static void Execute(FileCompressorSettings settings) => FileCompressor.Run(settings);
-
-    rootCommand.Handler = CommandHandler.Create(Execute);
+    rootCommand.SetAction(parseResult =>
+    {
+        var settings = new FileCompressorSettings
+        {
+            InputFiles = parseResult.GetValue(optionInputFiles),
+            InputDirectory = parseResult.GetValue(optionInputDirectory),
+            OutputDirectory = parseResult.GetValue(optionOutputDirectory),
+            OutputFiles = parseResult.GetValue(optionOutputFiles),
+            Pattern = parseResult.GetValue(optionPattern)!,
+            Format = parseResult.GetValue(optionFormat)!,
+            Level = parseResult.GetValue(optionLevel),
+            Threads = parseResult.GetValue(optionThreads),
+            Recursive = parseResult.GetValue(optionRecursive),
+            Quiet = parseResult.GetValue(optionQuiet)
+        };
+        FileCompressor.Run(settings);
+    });
 
     return rootCommand;
 }
@@ -128,7 +132,7 @@ internal static class FileCompressor
             return;
         }
 
-        if (fileCompressorSettings.OutputFiles is { })
+        if (fileCompressorSettings.OutputFiles is { Length: > 0 })
         {
             if (paths.Count > 0 && paths.Count != fileCompressorSettings.OutputFiles.Length)
             {
@@ -222,7 +226,11 @@ internal static class FileCompressor
         for (var i = 0; i < paths.Count; i++)
         {
             var inputPath = paths[i];
-            var outputFile = fileCompressorSettings.OutputFiles?[i];
+            FileInfo? outputFile = null;
+            if (fileCompressorSettings.OutputFiles is { Length: > 0 } && i < fileCompressorSettings.OutputFiles.Length)
+            {
+                outputFile = fileCompressorSettings.OutputFiles[i];
+            }
             string outputPath;
 
             if (outputFile is { })
@@ -277,6 +285,22 @@ internal static class FileCompressor
         input.CopyTo(compressor);
     }
 
+    private static void CompressZLib(string inPath, string outPath, CompressionLevel compressionLevel)
+    {
+        using var input = File.OpenRead(inPath);
+        using var output = File.Create(outPath);
+        using var compressor = new ZLibStream(output, compressionLevel);
+        input.CopyTo(compressor);
+    }
+
+    private static void CompressDeflate(string inPath, string outPath, CompressionLevel compressionLevel)
+    {
+        using var input = File.OpenRead(inPath);
+        using var output = File.Create(outPath);
+        using var compressor = new DeflateStream(output, compressionLevel);
+        input.CopyTo(compressor);
+    }
+
     private static void Compress(string inputPath, string outputPath, string format, CompressionLevel compressionLevel)
     {
         switch (format.ToLower())
@@ -286,6 +310,13 @@ internal static class FileCompressor
                 break;
             case "gz":
                 CompressGZip(inputPath, outputPath, compressionLevel);
+                break;
+            case "zlib":
+                CompressZLib(inputPath, outputPath, compressionLevel);
+                break;
+            case "def":
+            case "deflate":
+                CompressDeflate(inputPath, outputPath, compressionLevel);
                 break;
         }
     }

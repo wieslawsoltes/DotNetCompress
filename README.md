@@ -7,7 +7,7 @@
 [![Github All Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 [![Github Releases](https://img.shields.io/github/downloads/wieslawsoltes/DotNetCompress/latest/total.svg)](https://github.com/wieslawsoltes/DotNetCompress)
 
-An .NET compression tool. Supported file formats are Brotli and GZip.
+An .NET compression tool. Supported file formats are Brotli, GZip, ZLib and Deflate.
 
 # Usage
 
@@ -26,25 +26,37 @@ dotnet tool uninstall -g DotNetCompress
 ### Command-line help
 
 ```
-DotNetCompress:
+Description:
   An .NET compression tool.
 
 Usage:
   DotNetCompress [options]
 
 Options:
-  -f, --inputFiles <inputfiles>                               The relative or absolute path to the input files
-  -d, --inputDirectory <inputdirectory>                       The relative or absolute path to the input directory
-  -o, --outputDirectory <outputdirectory>                     The relative or absolute path to the output directory
-  --outputFiles <outputfiles>                                 The relative or absolute path to the output files
-  -p, --pattern <pattern>                                     The search string to match against the names of files in the input directory
-  --format <format>                                           The compression file format (br, gz)
-  -l, --level <Fastest|NoCompression|Optimal|SmallestSize>    The compression level (Optimal, Fastest, NoCompression, SmallestSize)
-  -t, --threads <threads>                                     The number of parallel job threads
-  -r, --recursive                                             Recurse into subdirectories of input directory search
-  --quiet                                                     Set verbosity level to quiet
-  --version                                                   Show version information
-  -?, -h, --help                                              Show help and usage information
+  -f, --inputFiles <inputFiles>      The relative or absolute path to 
+                                     the input files
+  -d, --inputDirectory               The relative or absolute path to 
+  <inputDirectory>                   the input directory
+  -o, --outputDirectory              The relative or absolute path to 
+  <outputDirectory>                  the output directory
+  --outputFiles <outputFiles>        The relative or absolute path to 
+                                     the output files
+  -p, --pattern <pattern>            The search string to match 
+                                     against the names of files in the 
+                                     input directory [default: *.*]
+  --format <format>                  The compression file format (br, 
+                                     gz, zlib, def) [default: br]
+  -l, --level                        The compression level (Optimal, 
+  <Fastest|NoCompression|Optimal|Sm  Fastest, NoCompression, 
+  allestSize>                        SmallestSize) [default: 
+                                     SmallestSize]
+  -t, --threads <threads>            The number of parallel job 
+                                     threads [default: 1]
+  -r, --recursive                    Recurse into subdirectories of 
+                                     input directory search
+  --quiet                            Set verbosity level to quiet
+  -?, -h, --help                     Show help and usage information
+  --version                          Show version information
 ```
 
 ### Brotli example
@@ -63,6 +75,24 @@ dotnetcompress -d /publish/files/path -p "*.dll" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.wasm" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.js" --format gz -l Optimal
 dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format gz -l Optimal
+```
+
+### ZLib example
+
+```
+dotnetcompress -d /publish/files/path -p "*.dll" --format zlib -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format zlib -l Optimal
+dotnetcompress -d /publish/files/path -p "*.js" --format zlib -l Optimal
+dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format zlib -l Optimal
+```
+
+### Deflate example
+
+```
+dotnetcompress -d /publish/files/path -p "*.dll" --format def -l Optimal
+dotnetcompress -d /publish/files/path -p "*.wasm" --format def -l Optimal
+dotnetcompress -d /publish/files/path -p "*.js" --format def -l Optimal
+dotnetcompress -d /publish/files/path -p "*.dll" -p "*.js" -p "*.wasm" --format def -l Optimal
 ```
 
 ## License
